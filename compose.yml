@@ -1,0 +1,43 @@
+services:
+  filament_app:
+    image: bitnami/laravel:9.5.1
+    container_name: filament_app
+    ports:
+      - ${APP_FORWARD_PORT}:8000
+    volumes:
+      - ./src:/app
+    cap_add:
+        - SYS_ADMIN
+    environment:
+      DB_CONNECTION: mysql
+      DB_HOST: filament_db
+      DB_PORT: 3306
+      DB_DATABASE: ${DB_DATABASE}
+      DB_USERNAME: ${DB_USERNAME}
+      DB_PASSWORD: ${DB_PASSWORD}
+    depends_on:
+      - filament_db
+
+  filament_db:
+    image: bitnami/mariadb:10.10.2
+    container_name: filament_db
+    ports:
+      - ${DB_FORWARD_PORT}:3306
+    volumes:
+      - db-store:/var/lib/mysql
+    environment:
+      MARIADB_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
+      MARIADB_DATABASE: ${DB_DATABASE}
+      MARIADB_USER: ${DB_USERNAME}
+      MARIADB_PASSWORD: ${DB_PASSWORD}
+
+  filament_mailhog:
+      image: mailhog/mailhog:latest
+      container_name: filament_mailhog
+      ports:
+          - '${MAILHOG_FORWARD_PORT:-1025}:1025'
+          - '${MAILHOG_DASHBOARD_FORWARD_PORT:-8025}:8025'
+
+volumes:
+    db-store:
+        driver: local
