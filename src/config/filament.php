@@ -1,5 +1,6 @@
 <?php
 
+use App\Filament\Resources;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\DispatchServingFilamentEvent;
 use Filament\Http\Middleware\MirrorConfigToSubpackages;
@@ -61,7 +62,7 @@ return [
     |
     */
 
-    'home_url' => '/',
+    'home_url' => '/' . env('FILAMENT_PATH', 'admin'),
 
     /*
     |--------------------------------------------------------------------------
@@ -105,7 +106,6 @@ return [
         'namespace' => 'App\\Filament\\Pages',
         'path' => app_path('Filament/Pages'),
         'register' => [
-            Pages\Dashboard::class,
         ],
     ],
 
@@ -139,8 +139,10 @@ return [
         'namespace' => 'App\\Filament\\Widgets',
         'path' => app_path('Filament/Widgets'),
         'register' => [
-            Widgets\AccountWidget::class,
-            Widgets\FilamentInfoWidget::class,
+            Resources\ApplyResource\Widgets\LatestApplies::class,
+            Resources\ApplyResource\Widgets\AppliesChart::class,
+            Resources\LanguageResource\Widgets\LanguagesChart::class,
+            Resources\ApplyResource\Widgets\ApplyOverview::class,
         ],
     ],
 
@@ -244,7 +246,7 @@ return [
             'alignment' => 'right',
         ],
         'sidebar' => [
-            'is_collapsible_on_desktop' => false,
+            'is_collapsible_on_desktop' => true,
             'groups' => [
                 'are_collapsible' => true,
             ],

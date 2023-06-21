@@ -4,6 +4,9 @@
 /public/storage
 /storage/*.key
 /vendor
+/lang/vendor
+!/lang/vendor/filament/ja/*
+!/lang/vendor/filament/en/*
 .env
 .env.backup
 .env.production
