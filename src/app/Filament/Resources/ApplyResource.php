@@ -34,10 +34,12 @@ class ApplyResource extends Resource
                     ->schema([
                         Forms\Components\TextInput::make('name')
                             ->name('お名前')
+                            ->disableAutocomplete()
                             ->required()
                             ->maxLength(100),
                         Forms\Components\TextInput::make('name_kana')
                             ->name('お名前（カナ）')
+                            ->disableAutocomplete()
                             ->required()
                             ->maxLength(100),
                         Forms\Components\Select::make('status')
@@ -51,23 +53,23 @@ class ApplyResource extends Resource
                     ->schema([
                         Forms\Components\TextInput::make('email')
                             ->name('メールアドレス')
+                            ->disableAutocomplete()
                             ->email()
                             ->required()
                             ->maxLength(100),
                     ]),
                 Grid::make()
                     ->schema([
-                        Forms\Components\TextInput::make('introducer')
-                            ->name('サイト紹介者名')
-                    ]),
-                Grid::make()
-                    ->schema([
                         Forms\Components\TextInput::make('interpreter_number')
-                            ->name('通訳案内士番号')
+                            ->name('管理番号')
+                            ->disableAutocomplete()
+                            ->required()
                             ->maxLength(50),
                         Forms\Components\DatePicker::make('interpreter_number_at')
-                            ->name('通訳案内士番号取得年月日')
-                            ->required(),
+                            ->name('管理番号取得年月日')
+                            ->required()
+                            ->format('Y-m-d')
+                            ->displayFormat('Y/m/d'),
                     ]),
             ]);
     }
@@ -84,6 +86,12 @@ class ApplyResource extends Resource
                     ->label('審査ステータス')
                     ->enum(ApplyStatus::options())
                     ->sortable(),
+                Tables\Columns\TextColumn::make('mutiple_name')
+                    ->label('NAME')
+                    ->searchable(
+                        condition: ['name', 'name_en'],
+                        isIndividual: true
+                    ),
                 Tables\Columns\TextColumn::make('name')
                     ->label('お名前')
                     ->extraAttributes(['class' => ''])
@@ -91,6 +99,13 @@ class ApplyResource extends Resource
                 Tables\Columns\TextColumn::make('name_kana')
                     ->label('お名前（カナ）')
                     ->hidden(),
+                Tables\Columns\TextColumn::make('email')
+                    ->label('メールアドレス')
+                    ->copyable()
+                    ->copyMessage('Email address copied')
+                    ->copyMessageDuration(1500)
+                    ->icon('heroicon-s-mail')
+                    ->iconPosition('after'),
                 Tables\Columns\TextColumn::make('created_at')
                     ->label('申込日時')
                     ->dateTime()
@@ -108,10 +123,10 @@ class ApplyResource extends Resource
                     ->sortable(),
             ])
             ->filters([
-                // AdvancedFilter\TextFilter::make('name')
-                //     ->label('お名前')
-                //     ->enableClauseLabel()
-                //     ->default(AdvancedFilter\TextFilter::CLAUSE_CONTAIN),
+                AdvancedFilter\TextFilter::make('name')
+                    ->label('お名前')
+                    ->enableClauseLabel()
+                    ->default(AdvancedFilter\TextFilter::CLAUSE_CONTAIN),
                 // Tables\Filters\TextFilter::make('name_kana')
                 //     ->query(fn (Builder $query, $value) => $query->searchByName($value)),
                 // ->query(fn (Builder $query): Builder => $query->where('interpreter_number', 'like', '%{value}%')),

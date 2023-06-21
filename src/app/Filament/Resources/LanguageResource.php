@@ -34,7 +34,10 @@ class LanguageResource extends Resource
                 Forms\Components\TextInput::make('code')
                     ->label('言語コード')
                     ->required()
+                    ->alphaDash()
                     ->maxLength(100),
+                Forms\Components\TextInput::make('sort')
+                    ->numeric(),
             ]);
     }
 
